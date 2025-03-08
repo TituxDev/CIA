@@ -26,7 +26,7 @@
 
 	Ejepmlo de ficheros:
 		topologia: 2 1 1 (esto crea una red con dos entradas con una sola capa de un unico perceptron).
-		perceptrones: 0 0 0 0 ( esto crea un perceptron que selecciona la funcion de activacion 0 {x <= 0} y los valores de sesgo y pesos inicializados en 0.
+		perceptrones: 0 0 0 0 ( esto crea un perceptron que selecciona la funcion de activacion 0 {x >= 0} y los valores de sesgo y pesos inicializados en 0.
 		entrenamiento: 0 0 0	Con esta tabla estrenamos el perceptron para resolver la fncion logica AND.
 			       0 1 0
 			       1 0 0
@@ -258,7 +258,7 @@ int train( struct net_t *net , struct test_t data ,  float learning_rate , float
 			}
     		}/*
 		Fin del ciclo de entrenamiento.*/
-/*	Se ejecuta el el entrenamiento hata que el valor sea menos que la tolerancia establecido o
+/*	Se ejecuta el el entrenamiento hata que el valor sea menor que la tolerancia establecido o
 	se alcance el maximo numero de intentos.
 */	} while( errors > tolerance && ++counter < max_attemps ) ;
 	return counter ;
