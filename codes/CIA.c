@@ -25,20 +25,27 @@
 		el ultimo numero de cada fila representa la salida esperada para cada prueba.
 
 	Ejepmlo de ficheros:
-		topologia: 2 1 1 (esto crea una red con dos entradas con una sola capa de un unico perceptron).
-		perceptrones: 0 0 0 0 ( esto crea un perceptron que selecciona la funcion de activacion 0 {x >= 0} y los valores de sesgo y pesos inicializados en 0.
-		entrenamiento: 0 0 0	Con esta tabla estrenamos el perceptron para resolver la fncion logica AND.
-			       0 1 0
-			       1 0 0
-			       1 1 1
+		topologia: 		2 1 1 (esto crea una red con dos entradas con una sola capa de un unico perceptron).
+		perceptrones: 	0 0 0 0 ( esto crea un perceptron que selecciona la funcion de activacion 0 {x >= 0} y los valores de sesgo y pesos inicializados en 0.
+		entrenamiento: 	0 0 0	Con esta tabla estrenamos el perceptron para resolver la fncion logica AND.
+			    	   	0 1 0
+			    		1 0 0
+			       		1 1 1
 */
 
-//BIBLIOTECAS NECESARIAS
+// FUNCIONES DE ACTIVACION.
+float boolean( float ) ; float boolean_d( float ) ; // 		      ( x >= 0 ) | ( 1 )
+float sigmoid( float ) ; float sigmoid_d( float ) ; // 	( 1 / ( 1 + exp( - x ) ) | sigmoid( x ) * ( 1 - sigmoid( x ) )
+// Indices de funciones.
+float ( *function[2][2] )( float )={
+	[0]= { boolean , boolean_d } ,
+	[1]= { sigmoid , sigmoid_d }
+} ;
+
+// DEFINICIONES.
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-//DEFINICION DE ESTRUCTURAS.
 struct perceptron_t{
 	int inputs ;
 	int function ;
@@ -62,25 +69,17 @@ struct test_t{
 } ;
 
 //DECLARACION DE FUNCIONES.
-//Ponderacion de entradas y pesos.
-float weigh( struct perceptron_t ) ;
-//Calculo del perceptron.
-float evaluate( struct perceptron_t * ) ;
 //Calculo de la red
 void execute( struct net_t * ) ;
 //Entrenamiento de la red
 int train( struct net_t * , struct test_t ,  float , float , float ) ;
 
-//	    ( x >= 0 ) | ( 1 )
-float boolean( float ) ; float boolean_d( float ) ;
-//( 1 / 1 + exp( -x ) )| ( sigmoid * ( 1 - sigmoid ) )
-float sigmoid( float ) ; float sigmoid_d( float ) ;
-
-//LISTA DE FUNCIONES DE ACTIVACION
-float ( *function[2][2] )( float )={
-	[0]= { boolean , boolean_d } ,
-	[1]= { sigmoid , sigmoid_d }
-} ;
+//Calculo del perceptron.
+float evaluate( struct perceptron_t * ) ;
+//Ponderacion de entradas y pesos.
+float weigh( struct perceptron_t ) ;
+// Ajusta el rango de valores de los peso
+void normalize( struct perceptron_t * , float , float ) ;
 
 //INICIO DEL PROGRAMA.
 int main( int argc , char **argv ){
@@ -220,6 +219,10 @@ int main( int argc , char **argv ){
 //FIN DEL PROGRAMA
 
 //DEFINICION DE FUNCIONES
+void execute( struct net_t *net  ){
+/*	Ejecuta el calculo de cada perceptron en la red.
+*/	for( int i= 0 ; i < net->layers ; i++ ) for( int j= 0 ; j < net->topo[i] ; j++ ) evaluate( &net->neuron[i][j] ) ;
+}
 int train( struct net_t *net , struct test_t data ,  float learning_rate , float tolerance , float max_attemps ){
 	int counter= 0 ;
 /*	error en cada prueba.
@@ -256,6 +259,7 @@ int train( struct net_t *net , struct test_t data ,  float learning_rate , float
 				for( int l= 0 ; l < net->neuron[j][k].inputs ; l++ ) net->neuron[j][k].weight[l]+= delta_h[j][k] * ( *net->neuron[j][k].in[l] ) * learning_rate ;
 				net->neuron[j][k].bias+= delta_h[j][k] * learning_rate ;
 			}
+			for( int j= 0 ; j < net->layers ; j++ ) for( int k= 0 ; k < net->topo[j] ; k++ ) normalize( &net->neuron[j][k] , 1 , -1 ) ;
     		}/*
 		Fin del ciclo de entrenamiento.*/
 /*	Se ejecuta el entrenamiento hata que el valor sea menor que la tolerancia establecida o
@@ -275,9 +279,21 @@ float evaluate( struct perceptron_t *perceptron ){
 	function[perceptron.function][0] y asignando el resultado a perceptron.out.
 */	return perceptron->out= perceptron->fun[0]( weigh( *perceptron ) ) ;
 }
-void execute( struct net_t *net  ){
-/*	Ejecuta el calculo de cada perceptron en la res.
-*/	for( int i= 0 ; i < net->layers ; i++ ) for( int j= 0 ; j < net->topo[i] ; j++ ) evaluate( &net->neuron[i][j] ) ;
+void normalize( struct perceptron_t *neuron , float max , float min ){
+/*	Calcula del promedio de los pesos del perceptron y ajusta estos dentro del rango 
+	establecido ente max y min
+*/	float avrg= 0 , delta= max - min ;
+	if( neuron->inputs ) return ;
+	for( int i= 0 ; i < neuron->inputs ; i++ ) avrg+= fabs( neuron->weight[i] ) ;
+	avrg/= neuron->inputs ;
+	avrg+= !avrg ;
+	for( int i= 0 ; i < neuron->inputs ; i++ ){
+		neuron->weight[i]/= avrg ;
+		neuron->weight[i]*= delta ;
+		neuron->weight[i]+= min ;
+		neuron->bias*= delta ;
+		neuron->bias+= min ;
+	}
 }
 
 //Funciones de activacion.
