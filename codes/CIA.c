@@ -135,7 +135,7 @@ int main( int argc , char **argv ){
 	en funcion de la cantidad de entradas de net_t considerando un banco de pruebas binario.
 	Define la cantidad de muestras en test_t.in ( valores de entrada para las pruebas) y
 	test_t.out ( salidas esperadas para cada prueba.
-*/	struct test_t data={ .samples= pow( 2 , net.inputs ) } ;
+*/	struct test_t data={ .samples= 1 << net.inputs } ;
 	data.in= malloc( data.samples * sizeof( float * ) ) ;
 	data.out= malloc( data.samples * sizeof( float ) ) ;
 /*	Lee el fichero asignado en argv[3].
