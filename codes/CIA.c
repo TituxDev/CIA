@@ -258,7 +258,7 @@ int train( struct net_t *net , struct test_t data ,  float learning_rate , float
 			}
     		}/*
 		Fin del ciclo de entrenamiento.*/
-/*	Se ejecuta el el entrenamiento hata que el valor sea menor que la tolerancia establecida o
+/*	Se ejecuta el entrenamiento hata que el valor sea menor que la tolerancia establecida o
 	se alcance el maximo numero de intentos.
 */	} while( errors > tolerance && ++counter < max_attemps ) ;
 	return counter ;
