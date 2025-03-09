@@ -96,6 +96,7 @@ int main( int argc , char **argv ){
 	save_neurons( argv[2] , net ) ;
 	save_topo( argv[1] , net ) ;
 	free_test( data , net->inputs ) ;
+	free_net( net ) ;
 	putchar( '\n' ) ;
 	return 0 ;
 }
