@@ -1,36 +1,51 @@
 /*
-	Compilar usando la opcion -lm en gcc ( gcc <fichero de entrada> -o <fichero binario> -lm ).
+	Compilación:
+		Usar la opción -lm en gcc:
+		gcc <fichero_de_entrada> -o <fichero_binario> -lm
 
-	Ejecucion: ./<fichero binario> <fichero de topologia> <fichero con lista de perceptrones> <fichero con datos de entrenamiento>
+	Ejecución:
+		./<fichero_binario> <nombre_de_red> <fichero_de_entrenamiento> <modo_de_impresión>
 
-	El programa crea una red neuronal en funcion de los datos de los ficheros de topologia y lista se perceptrones.
-	Crea un banco de pruebas enfuncion de la informacion del fichero de entrenamiento.
-	Imprime la informacion del banco de pruebas
-	Imprime la configuracion actual de la red.
-	Entrena a la red en fucion de los dato de entrenamiento e imprime la cantidad de ciclos del dentrenamiento.
-	Imprime El estado final de la red.
-	Guarda los nuevos pesos en el fichero de la lista de perceptrones.
+	Descripción:
+		Este programa crea y entrena una red neuronal en función de los datos proporcionados en los archivos de topología y lista de perceptrones.
+		Utiliza un conjunto de datos de entrenamiento para ajustar los pesos y sesgos de la red.
+		Después del entrenamiento, imprime información de la red y guarda los nuevos pesos en el archivo de perceptrones.
 
-	Fichero de topologia: Fichero que guarda una lista de numeros enteros.
-		El primer numero indica la cantidad de entradas que debe tener la red ( valor minimo 2 )
-		El segundo numero es la cantidad de capas en la red ( valor minimo 1 ).
-		Los siguientes numeros son la cantidad de perceptrones por cada capa( valor minimo 2 para las capas ocultas y 1 para la capa de salida ).
-	Fichero de lista de perceptrones: Fichero que guarda la informacion de cada perceptron de la red.
-		El primer numero es un entero positivo que se usa como indice para seleccionar la funcion de activacion.
-		El segundo numero el un decimal con el valor del sesgo del perceptron.
-		Los siguientes numeros de la fila son los pesos correspodientes a cada entrada del perceptron.
-	Fichero de entrenamiento: Se guarda una tabla de con los datos de entrada para pruebas y sus salidas esperadas.
-		Cada fila representa una prueba.
-		Los primeros numeros de la fila son los indicados como numero de entradas de las pruebas( debe coicidir con el numero de entradas de la red)
-		el ultimo numero de cada fila representa la salida esperada para cada prueba.
+	Archivos de entrada:
+		1. Fichero de topología: ( nombre.topology )
+			- Contiene una lista de números enteros.
+			- El primer número indica la cantidad de entradas de la red (mínimo 2).
+			- El segundo número representa la cantidad de capas ocultas (mínimo 1).
+			- Los siguientes números indican la cantidad de perceptrones por capa (mínimo 2 en ocultas, mínimo 1 en la capa de salida).
 
-	Ejepmlo de ficheros:
-		topologia: 		2 1 1 (esto crea una red con dos entradas con una sola capa de un unico perceptron).
-		perceptrones: 	0 0 0 0 ( esto crea un perceptron que selecciona la funcion de activacion 0 {x >= 0} y los valores de sesgo y pesos inicializados en 0.
-		entrenamiento: 	0 0 0	Con esta tabla estrenamos el perceptron para resolver la fncion logica AND.
-			    	   	0 1 0
-			    		1 0 0
-			       		1 1 1
+		2. Fichero de lista de perceptrones: (nombre.neurons )
+			- Contiene la información de cada perceptrón de la red.
+			- Cada línea tiene:
+				- Un entero que selecciona la función de activación.
+				- Un número decimal que representa el sesgo del perceptrón.
+				- Los siguientes números son los pesos correspondientes a cada entrada.
+
+		3. Fichero de entrenamiento:
+			- Contiene una tabla con datos de entrada y sus salidas esperadas.
+			- Cada fila representa un conjunto de pruebas.
+			- Los primeros valores corresponden a las entradas de la red.
+			- El último valor de cada fila representa la salida esperada.
+
+		4. Modo de impresión:
+			- Un número entero que determina el formato de impresión de los resultados.
+
+	Ejemplo de archivos:
+		Archivo de topología (topologia.txt):
+			2 1 1  -> Red con 2 entradas, 1 capa oculta, 1 perceptrón en la capa de salida.
+
+		Archivo de perceptrones (perceptrones.txt):
+			0 0 0 0  -> Perceptrón con función de activación 0, sesgo 0 y pesos inicializados en 0.
+
+		Archivo de entrenamiento (entrenamiento.txt):
+			0 0 0  -> Entrenamiento para la función lógica AND.
+			0 1 0
+			1 0 0
+			1 1 1
 */
 float boolean( float ) ; float boolean_d( float ) ; // 		      ( x >= 0 ) | ( 1 )
 float sigmoid( float ) ; float sigmoid_d( float ) ; // 	( 1 / ( 1 + exp( - x ) ) | sigmoid( x ) * ( 1 - sigmoid( x ) )
@@ -41,6 +56,7 @@ float ( *function[2][2] )( float )={
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 struct perceptron_t{
 	int inputs ;
 	int function ;
@@ -62,25 +78,19 @@ struct test_t{
 	float **in ;
 	float *out ;
 } ;
+void load_net( struct net_t ** , char * ) ;
+void load_test_data( char * , struct test_t ** , int , int ) ;
+void close_net( struct net_t * , char * ) ;
+void free_test( struct test_t * , int ) ;
 void execute( struct net_t * ) ;
 int train( struct net_t * , struct test_t ,  float , float , float ) ;
 void print_net( struct net_t * , struct test_t , int ) ;
-void load_topo( char * , struct net_t ** ) ;
-void load_neurons( char * , struct net_t ** ) ;
-void load_test_data( char * , struct test_t ** , int , int ) ;
-void save_neurons( char * , struct net_t * ) ;
-void save_topo( char * , struct net_t * ) ;
-void free_test( struct test_t * , int );
-void free_net( struct net_t * ) ;
-float evaluate( struct perceptron_t * ) ;
-float weigh( struct perceptron_t ) ;
-void normalize( struct perceptron_t * , float , float ) ;
+
 int main( int argc , char **argv ){
-	struct net_t *net ;
-	load_topo( argv[1] , &net ) ;
-	load_neurons( argv[2] , &net ) ;
 	struct test_t *data ;
-	load_test_data( argv[3] , &data , net->inputs , 4 ) ;
+	struct net_t *net ;
+	load_net( &net , argv[1] ) ;
+	load_test_data( argv[2] , &data , net->inputs , 4 ) ;
 	printf( "\nMUESTRA:" ) ;
 	for( int i= 0 ; i < data->samples ; i++ ){
 		putchar( '\n' ) ;
@@ -89,51 +99,54 @@ int main( int argc , char **argv ){
 	}
 	putchar( '\n' ) ;
 	printf( "\nORIGINAL" ) ;
-	print_net( net , *data , argv[4][0] - '0' ) ;
+	print_net( net , *data , argv[3][0] - '0' ) ;
 	printf( "\n\nEPOCAS: %i\n" , train( net , *data , 0.04 , 0.03 , 100000 ) ) ;
 	printf( "\nRESULTADO" ) ;
-	print_net( net , *data , argv[4][0] - '0' ) ;
-	save_neurons( argv[2] , net ) ;
-	save_topo( argv[1] , net ) ;
+	print_net( net , *data , argv[3][0] - '0' ) ;
+	close_net( net , argv[1] ) ;
 	free_test( data , net->inputs ) ;
-	free_net( net ) ;
 	putchar( '\n' ) ;
 	return 0 ;
 }
-void execute( struct net_t *net  ){
-	for( int i= 0 ; i < net->layers ; i++ ) for( int j= 0 ; j < net->topo[i] ; j++ ) evaluate( &net->neuron[i][j] ) ;
+
+void load_topo( char * , struct net_t **) ;
+void load_neurons( char * , struct net_t **) ;
+void load_net( struct net_t **net , char *file ){
+	int l= strlen( file ) ;
+	char name[l+10] ;
+	strcpy( name , file ) ;
+	strcat( name , ".topology" ) ;
+	load_topo( name , net ) ;
+	strcpy( &name[l] , ".neurons" ) ;
+	load_neurons( name , net ) ;
 }
-int train( struct net_t *net , struct test_t data ,  float learning_rate , float tolerance , float max_attemps ){
-	int counter= 0 ;
-	float error ;
-	float errors ;
-	int ly= net->layers - 1;
-	do{
-		errors= 0 ;
-		for( int i= 0 ; i < data.samples ; i++ ){
-		    for( int j= 0; j < net->inputs ; j++ ) net->in[j]= data.in[i][j] ;
-			execute( net ) ;
-		    error= data.out[i] - net->neuron[ly][0].out ;
-			errors= fmax( fabs( error ) , errors ) ;
-            float delta_o[net->topo[ly]] ;
-			for( int j= 0 ; j < net->topo[ly] ; j++ ) delta_o[j]= ( data.out[i] - net->neuron[ly][j].out ) * net->neuron[ly][j].fun[1]( net->neuron[ly][j].out) ;
-		    float delta_h[ly][net->topo[0]] ;
-			for( int j= 0 ; j < net->topo[ly] ; j++ ){
-				for( int k= 0 ; k < net->neuron[ly][j].inputs ; k++ ) net->neuron[ly][j].weight[k]+= delta_o[j] * ( *net->neuron[ly][j].in[k] ) * learning_rate ;
- 				net->neuron[ly][j].bias+= delta_o[j] * learning_rate ;
- 			}
-		    for( int j= ly - 1 ; j >= 0 ; j-- ) for( int k= 0 ; k < net->topo[j] ; k++ ){
-				float back= 0 ;
-				for( int l= 0 , f= j + 1 ; l < net->topo[f] ; l++ ) back+= ( j == ly - 1 ? delta_o[l] : delta_h[f][l] ) * net->neuron[f][l].weight[k] ;
-				delta_h[j][k]= back * net->neuron[j][k].fun[1]( net->neuron[j][k].out ) ;
-				for( int l= 0 ; l < net->neuron[j][k].inputs ; l++ ) net->neuron[j][k].weight[l]+= delta_h[j][k] * ( *net->neuron[j][k].in[l] ) * learning_rate ;
-				net->neuron[j][k].bias+= delta_h[j][k] * learning_rate ;
-			}
-			for( int j= 0 ; j < net->layers ; j++ ) for( int k= 0 ; k < net->topo[j] ; k++ ) normalize( &net->neuron[j][k] , 1 , -1 ) ;
-    	}
-	} while( errors > tolerance && ++counter < max_attemps ) ;
-	return counter ;
+void save_net( struct net_t * , char * );
+void free_net( struct net_t * ) ;
+void close_net( struct net_t *net , char *name ){
+	save_net( net , name ) ;
+	free_net( net ) ;
 }
+void load_test_data( char *file , struct test_t **data , int inputs , int samples){
+	*data= malloc( sizeof( struct test_t ) ) ;
+	FILE *f ;
+	( *data )->samples= samples ;
+	( *data )->in= malloc( ( *data )->samples * sizeof( float * ) ) ;
+	( *data )->out= malloc( ( *data )->samples * sizeof( float ) ) ;
+	f= fopen( file , "r" ) ;
+	for( int i= 0 ; i < ( *data )->samples ; i++ ){
+		( *data )->in[i]= malloc( inputs * sizeof( float ) ) ;
+		for( int j= 0 ; j < inputs ; j++ ) fscanf( f , "%f" , &( *data )->in[i][j] ) ;
+		fscanf( f , "%f" , &( *data )->out[i] ) ;
+	}
+	fclose( f ) ;
+}
+void free_test( struct test_t *data , int inputs ){
+	for( int i= 0 ; i < inputs ; i++ ) free( data->in[i] ) ;
+	free( data->in ) ;
+	free( data->out ) ;
+	free( data ) ;
+}
+
 void print_net( struct net_t *net , struct test_t data , int decimals ){
 	decimals%= 10 ;
 	decimals+= '0' ;
@@ -150,6 +163,70 @@ void print_net( struct net_t *net , struct test_t data , int decimals ){
 		}
 	}
 }
+float bk_error( struct perceptron_t * , float * , int , int ) ;
+float derivate( struct perceptron_t * ) ;
+void adjust( struct perceptron_t * , float * , float , int ) ;
+int train( struct net_t *net , struct test_t data ,  float learning_rate , float tolerance , float max_attemps ){
+	int counter= 0 ;
+	float error ;
+	int ly= net->layers - 1;
+	do{
+		error= 0 ;
+		for( int i= 0 ; i < data.samples ; i++ ){
+			for( int j= 0; j < net->inputs ; j++ ) net->in[j]= data.in[i][j] ;
+			execute( net ) ;
+			for( int j= 0 ; j < net->topo[ly] ; j++ ) error= fmax(fabs( data.out[i] - net->neuron[ly][j].out ) , error ) ;
+			if ( error < tolerance ) continue ;
+			float delta_[net->topo[0]] ;
+			float back ;
+			for( int j= ly ; j >= 0 ; j-- ){
+				for( int k= 0 ; k < net->topo[j + ( j < ly )] ; k++ ) delta_[k]= derivate( ( struct perceptron_t * )&net->neuron[j][k] ) * ( j == ly ? data.out[i] - net->neuron[j][k].out : back );
+				adjust( ( struct perceptron_t * )net->neuron[j] , delta_ , learning_rate ,net->topo[j] ) ;
+				back= j ? bk_error( ( struct perceptron_t * )net->neuron[j] , delta_ , net->topo[j - 1] , net->topo[j] ) : 0 ;
+			}
+		}
+	} while( error > tolerance && ++counter < max_attemps ) ;
+	return counter ;
+}
+
+float weigh( struct perceptron_t perceptron ){
+	float s= perceptron.bias ;
+	for( int i= 0 ; i < perceptron.inputs ; i++ ) s+= *perceptron.in[i] * perceptron.weight[i] ;
+	return s ;
+}
+float evaluate( struct perceptron_t *perceptron ){
+	return perceptron->out= perceptron->fun[0]( weigh( *perceptron ) ) ;
+}
+void execute( struct net_t *net  ){
+	for( int i= 0 ; i < net->layers ; i++ ) for( int j= 0 ; j < net->topo[i] ; j++ ) evaluate( &net->neuron[i][j] ) ;
+}
+float bk_error( struct perceptron_t *layer , float *delta_ , int prev_layer , int neurons ){
+	float b= 0 ;
+	for( int i= 0 ; i < prev_layer ; i ++ ) for( int j= 0 ; j < neurons ; j++ ) b+= delta_[i] * layer[j].weight[i] ;
+	return b ;
+}
+float derivate( struct perceptron_t *neuron ){
+	return neuron->fun[1]( neuron->out ) ;
+}
+void adjust( struct perceptron_t *neuron , float *delta_ , float learning_rate , int neurons ){
+	for( int k= 0 ; k < neurons ; k++ ){
+		for( int l= 0 ; l < neuron[k].inputs ; l++ ) neuron[k].weight[l]+= delta_[k] * *neuron[k].in[l] * learning_rate ;
+		neuron[k].bias+= delta_[k] * learning_rate ;
+	}	
+}
+float boolean( float sum ){
+	return sum >= 0 ;
+}
+float boolean_d( float sum){
+	return 1 ;
+}
+float sigmoid( float sum ){
+	return 1 / ( 1 + exp( -sum ) ) ;
+}
+float sigmoid_d( float sig ){
+	return sig * ( 1 - sig ) ;
+}
+
 void load_topo( char *file , struct net_t **net  ){
 	*net= malloc( sizeof( struct net_t ) ) ;
 	FILE *s ;
@@ -185,20 +262,6 @@ void load_neurons( char *file , struct net_t ** net ){
 	}
 	fclose( s ) ;	
 }
-void load_test_data( char *file , struct test_t **data , int inputs , int samples){
-	*data= malloc( sizeof( struct test_t ) ) ;
-	FILE *f ;
-	( *data )->samples= samples ;
-	( *data )->in= malloc( ( *data )->samples * sizeof( float * ) ) ;
-	( *data )->out= malloc( ( *data )->samples * sizeof( float ) ) ;
-	f= fopen( file , "r" ) ;
-	for( int i= 0 ; i < ( *data )->samples ; i++ ){
-		( *data )->in[i]= malloc( inputs * sizeof( float ) ) ;
-		for( int j= 0 ; j < inputs ; j++ ) fscanf( f , "%f" , &( *data )->in[i][j] ) ;
-		fscanf( f , "%f" , &( *data )->out[i] ) ;
-	}
-	fclose( f ) ;
-}
 void save_neurons( char *file , struct net_t *net ){
 	FILE *f ;
 	f= fopen( file , "w" ) ;
@@ -218,11 +281,14 @@ void save_topo( char *file , struct net_t *net ){
 	for( int i= 0 ; i < net->layers ; i++ ) fprintf( f , " %i" , net->topo[i] ) ;
 	fclose( f ) ;
 }
-void free_test( struct test_t *data , int inputs ){
-	for( int i= 0 ; i < inputs ; i++ ) free( data->in[i] ) ;
-	free( data->in ) ;
-	free( data->out ) ;
-	free( data ) ;
+void save_net( struct net_t *net , char *file ){
+	int l= strlen( file ) ;
+	char name[l+10] ;
+	strcpy( name , file ) ;
+	strcat( name , ".topology" ) ;
+	save_topo( name , net ) ;
+	strcpy( &name[l] , ".neurons" ) ;
+	save_neurons( name , net ) ;
 }
 void free_net( struct net_t *net ){
 	free( net->in ) ;
@@ -235,38 +301,4 @@ void free_net( struct net_t *net ){
 	}
 	free( net->neuron ) ;
 	free( net->topo ) ;
-}
-float weigh( struct perceptron_t perceptron ){
-	float s= perceptron.bias ;
-	for( int i= 0 ; i < perceptron.inputs ; i++ ) s+= *perceptron.in[i] * perceptron.weight[i] ;
-	return s ;
-}
-float evaluate( struct perceptron_t *perceptron ){
-	return perceptron->out= perceptron->fun[0]( weigh( *perceptron ) ) ;
-}
-void normalize( struct perceptron_t *neuron , float max , float min ){
-float avrg= 0 , delta= max - min ;
-	if( neuron->inputs ) return ;
-	for( int i= 0 ; i < neuron->inputs ; i++ ) avrg+= fabs( neuron->weight[i] ) ;
-	avrg/= neuron->inputs ;
-	avrg+= !avrg ;
-	for( int i= 0 ; i < neuron->inputs ; i++ ){
-		neuron->weight[i]/= avrg ;
-		neuron->weight[i]*= delta ;
-		neuron->weight[i]+= min ;
-		neuron->bias*= delta ;
-		neuron->bias+= min ;
-	}
-}
-float boolean( float sum ){
-	return sum >= 0 ;
-}
-float boolean_d( float sum){
-	return 1 ;
-}
-float sigmoid( float sum ){
-	return 1 / ( 1 + exp( -sum ) ) ;
-}
-float sigmoid_d( float sig ){
-	return sig * ( 1 - sig ) ;
 }
