@@ -12,13 +12,13 @@
 		Después del entrenamiento, imprime información de la red y guarda los nuevos pesos en el archivo de perceptrones.
 
 	Archivos de entrada:
-		1. Fichero de topología: ( nombre.topology )
+		1. Fichero de topología:
 			- Contiene una lista de números enteros.
 			- El primer número indica la cantidad de entradas de la red (mínimo 2).
 			- El segundo número representa la cantidad de capas ocultas (mínimo 1).
 			- Los siguientes números indican la cantidad de perceptrones por capa (mínimo 2 en ocultas, mínimo 1 en la capa de salida).
 
-		2. Fichero de lista de perceptrones: (nombre.neurons )
+		2. Fichero de lista de perceptrones:
 			- Contiene la información de cada perceptrón de la red.
 			- Cada línea tiene:
 				- Un entero que selecciona la función de activación.
@@ -35,10 +35,10 @@
 			- Un número entero que determina el formato de impresión de los resultados.
 
 	Ejemplo de archivos:
-		Archivo de topología (topologia.txt):
+		Archivo de topología (nombre.topology):
 			2 1 1  -> Red con 2 entradas, 1 capa oculta, 1 perceptrón en la capa de salida.
 
-		Archivo de perceptrones (perceptrones.txt):
+		Archivo de perceptrones (nombre.neurons):
 			0 0 0 0  -> Perceptrón con función de activación 0, sesgo 0 y pesos inicializados en 0.
 
 		Archivo de entrenamiento (entrenamiento.txt):
