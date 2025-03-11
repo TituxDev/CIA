@@ -12,7 +12,7 @@
 		Después del entrenamiento, imprime información de la red y guarda los nuevos pesos en el archivo de perceptrones.
 
 	Archivos de entrada:
-		1. Fichero de topología:
+		1. Fichero de topología: ( nombre.topology )
 			- Contiene una lista de números enteros.
 			- El primer número indica la cantidad de entradas de la red (mínimo 2).
 			- El segundo número representa la cantidad de capas ocultas (mínimo 1).
