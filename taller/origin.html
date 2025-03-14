@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motivacion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 2em;
+      background: #007BFF;
+      color: white;
+      padding: 15px;
+      margin: 0;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+
+    .example {
+      background: #222;
+      color: #0f0;
+      font-family: monospace;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 1.1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Presentacion</h1>
+  <nav>
+    <main>
+      <h2>Bienvenido al Taller de IA</h2>
+      <p>A raiz de mi curiosidad por comprender el funcionamiento de los sistemas de aprendizaje automatico comence buscando en la red
+        informacion al respecto, me encontre con dos ideas muy simples de comprender lo cual me motivo a crear un codigo que genere una
+        red neuronal y deseo comparir mi camino a quien este interesado en adquirir un acercamiento tecnico de una manera practica.
+
+        Para comprender como funciona una red neuronal es necesario estudiar su elemento mas basico, el perceptron el cual seria el
+        equivalente a una neurona, este perceptron se compone de 5 elementos; una serie de entradas que recibira la informacion que sera
+        la informacion, una serie de pesos que seran asociados uno a uno con cada una de las entradas, un valor conocido como sesgo, la
+        funcion que realiza la suma del sesgo mas la suma de  cada uno de los productos de cada una de las entradas con su respectivo
+        peso: sesgo + (E1xP1) + (E2xP2) + (E3xP3) + ( ... ), una funcion de activacion la cual recibira el resultado de la suma anterior
+        como valor de entrada, el resulado de la funcion de activacion.
+        Si se crea una serie de estos elementos donde las entradas de uno o mas perceptrones ensten conectados a las salidas de otro
+        grupo de perceptrones donde cada perceptron tiene sus propios valores de pesos y sesgo y pueden tener distinta fincion de
+        activacion, cuando entrenamos a nuestra red estos valores son ajustados para devolver la probabilidad de una respuesta correcta.
+        
+        Las funciones de activacion pueden ser distintas, la mas simple es una funcion booleana que nos regrese un valor 1 o 0 dependiendo
+        del valor de la ponderacion de las entradas y el sesgo, y sera el primer ejercicio que vamos a desarrollar, a lo largo del taller
+        iremos desglozando el codigo y otorgandole flexibilidad para utilizar cada una de sus partes de manera individual, permitiendo al
+        practicante implementar los conocimientos en cualquier lenguaje qu ese desee. 
+      </p>
+      <p><a href="taller/index.html">Metodología</a></p>
+      <p><a href="tools/index.html">Herramientas necesarias</a></p>
+    </main>
+  </nav>
+</body>
+<footer>
+  <div class="footer-links">
+    <h5>
+      <a href="#">Sobre el autor</a> | 
+      <a href="#">Contacto</a> | 
+      <a href="LICENSE">Licencia</a>
+    </h5>
+  </div>
+</footer>
+</html>
