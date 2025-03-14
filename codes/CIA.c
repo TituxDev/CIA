@@ -183,10 +183,9 @@ void print_net( struct net_t *net , struct test_t data , int decimals ){
 		}
 	}
 }
-// Función para normalizar un valor al rango (-1,1) sin incluir los extremos
-float normalize_value(float value) {
-	const float epsilon = 1e-6; // Pequeña constante para evitar los valores extremos
-	return (value > 0) ? value - epsilon : value + epsilon;
+float normalize_value( float value ){
+	const float epsilon= 1e-6 ;
+	return ( value > 0 ) ? value - epsilon : value + epsilon ;
 }
 float bk_error( struct perceptron_t * , float * , int ) ;
 float derivate( struct perceptron_t * ) ;
@@ -264,14 +263,13 @@ float sigmoid_d( float sig ){
 	return sig * ( 1 - sig ) ;
 }
 
-void randomize_net(struct net_t **net , int a , int b ) {
-    for (int i = 0; i < (*net)->layers; i++) {
-        for (int j = 0; j < (*net)->topo[i]; j++) {
-            for (int k = 0; k < (*net)->neuron[i][j].inputs; k++) (*net)->neuron[i][j].weight[k] = ((float)((rand( ) % 10)) / 10) * ( (rand() % 2 ) ? 1 : -1) ;
-            float raw_bias = ((float)rand() / RAND_MAX) * 2.0 - 1.0;
-            (*net)->neuron[i][j].bias = normalize_value(raw_bias);
-        }
-    }
+void randomize_net( struct net_t **net ){
+	srand( time( NULL ) ) ;
+    for( int i= 0 ; i < ( *net )->layers ; i++ ) for( int j= 0 ; j < ( *net )->topo[i] ; j++ ){
+		for( int k= 0 ; k < ( *net )->neuron[i][j].inputs ; k++ ) ( *net )->neuron[i][j].weight[k]= ( ( float )( ( rand( ) % 10 ) ) / 10 ) * ( ( rand( ) % 2 ) ? 1 : -1 ) ;
+		float raw_bias= ( ( float )rand( ) / RAND_MAX ) * 2.0 - 1.0 ;
+		( *net )->neuron[i][j].bias= normalize_value( raw_bias ) ;
+	}
 }
 void create_topo( struct net_t **net ){
 	char O ;
@@ -356,7 +354,7 @@ void load_neurons( char *file , struct net_t ** net ){
 			( *net )->neuron[i][j].fun[0]= function[1][0] ;
 			( *net )->neuron[i][j].fun[1]= function[1][1] ;
 		}
-		randomize_net( net , 1 , -1 ) ;
+		randomize_net( net  ) ;
 	} else{
 		for( int i= 0 ; i < ( *net )->layers ; i++ ) for( int j= 0 ; j < ( *net )->topo[i] ; j++ ){
 			fscanf( s , "%i" , &( *net )->neuron[i][j].function ) ;
