@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motivacion</title>
+  <title>Mi Camino en la IA</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -15,16 +15,16 @@
     }
 
     h1 {
-      font-size: 2em;
+      font-size: 2.5em;
       background: #007BFF;
       color: white;
-      padding: 15px;
+      padding: 20px;
       margin: 0;
     }
 
     main {
-      max-width: 600px;
-      margin: 20px auto;
+      max-width: 800px;
+      margin: 30px auto;
       background: white;
       padding: 20px;
       border-radius: 10px;
@@ -32,68 +32,49 @@
       text-align: left;
     }
 
-    .example {
-      background: #222;
-      color: #0f0;
-      font-family: monospace;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: left;
-      white-space: pre-wrap;
+    p {
+      line-height: 1.6;
     }
 
     a {
       color: #007BFF;
       text-decoration: none;
+      font-weight: bold;
     }
 
     a:hover {
       text-decoration: underline;
     }
 
-    .back-link {
-      display: inline-block;
-      margin-top: 20px;
-      font-size: 1.1em;
+    .footer {
+      margin-top: 30px;
+      padding: 15px;
+      background: #ddd;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Presentacion</h1>
-  <nav>
-    <main>
-      <h2>Bienvenido al Taller de IA</h2>
-      <p>A raiz de mi curiosidad por comprender el funcionamiento de los sistemas de aprendizaje automatico comence buscando en la red
-        informacion al respecto, me encontre con dos ideas muy simples de comprender lo cual me motivo a crear un codigo que genere una
-        red neuronal y deseo comparir mi camino a quien este interesado en adquirir un acercamiento tecnico de una manera practica.
-
-        Para comprender como funciona una red neuronal es necesario estudiar su elemento mas basico, el perceptron el cual seria el
-        equivalente a una neurona, este perceptron se compone de 5 elementos; una serie de entradas que recibira la informacion que sera
-        la informacion, una serie de pesos que seran asociados uno a uno con cada una de las entradas, un valor conocido como sesgo, la
-        funcion que realiza la suma del sesgo mas la suma de  cada uno de los productos de cada una de las entradas con su respectivo
-        peso: sesgo + (E1xP1) + (E2xP2) + (E3xP3) + ( ... ), una funcion de activacion la cual recibira el resultado de la suma anterior
-        como valor de entrada, el resulado de la funcion de activacion.
-        Si se crea una serie de estos elementos donde las entradas de uno o mas perceptrones ensten conectados a las salidas de otro
-        grupo de perceptrones donde cada perceptron tiene sus propios valores de pesos y sesgo y pueden tener distinta fincion de
-        activacion, cuando entrenamos a nuestra red estos valores son ajustados para devolver la probabilidad de una respuesta correcta.
-        
-        Las funciones de activacion pueden ser distintas, la mas simple es una funcion booleana que nos regrese un valor 1 o 0 dependiendo
-        del valor de la ponderacion de las entradas y el sesgo, y sera el primer ejercicio que vamos a desarrollar, a lo largo del taller
-        iremos desglozando el codigo y otorgandole flexibilidad para utilizar cada una de sus partes de manera individual, permitiendo al
-        practicante implementar los conocimientos en cualquier lenguaje qu ese desee. 
-      </p>
-      <p><a href="taller/index.html">Metodología</a></p>
-      <p><a href="tools/index.html">Herramientas necesarias</a></p>
-    </main>
-  </nav>
+  <h1>Mi Camino en la IA</h1>
+  <main>
+    <p>Siempre me ha gustado entender cómo funcionan las cosas, y la programación no es la excepción. Sabía escribir código para hacer que una computadora siguiera instrucciones, pero un día me pregunté: <em>¿cómo funciona un programa que puede aprender por sí mismo?</em></p>
+    
+    <p>Me puse a investigar y encontré un montón de información sobre redes neuronales, pero al principio todo sonaba muy técnico. Veía cosas como <em>"derivadas", "funciones de activación", "gradiente descendente"</em>… y, sinceramente, no me apetecía ponerme a hacer cálculos complicados. Así que lo dejé pasar.</p>
+    
+    <p>Hasta que un día me topé con un concepto más simple: <strong>el perceptrón booleano</strong>. Básicamente, era una "mini neurona" que podía aprender reglas lógicas como AND, OR y NOT. Me pareció interesante y le pedí a ChatGPT un código para probarlo en C (porque me gusta complicarme la vida, supongo 😆).</p>
+    
+    <p>Me dio un código que entrenaba un perceptrón y, al jugar con él, empecé a entender cómo las máquinas pueden aprender. Cambié valores, probé diferentes combinaciones y me encontré con un problema curioso: el perceptrón no podía aprender la función XOR. En pocas palabras, había casos en los que simplemente no podía dar la respuesta correcta.</p>
+    
+    <p>Eso me hizo pensar… <em>¿y si conecto varias neuronas en lugar de usar solo una?</em> Se me ocurrieron dos formas de hacerlo: una donde las neuronas estuvieran en "cascada" (una alimentando a la otra) y otra donde estuvieran en paralelo. Como en ese momento no tenía las herramientas para probar la segunda opción, fui con la primera.</p>
+    
+    <p>Ahí vino el siguiente reto: no podía entrenar la red completa, así que tuve que entrenar cada "neurona" por separado y conectarlas manualmente. Fue un proceso de prueba y error hasta que entendí cómo hacer que la red ajustara sus valores automáticamente. La clave estaba en usar una función llamada <strong>sigmoide</strong>, que hacía que el aprendizaje fuera más flexible y preciso.</p>
+    
+    <p>Poco a poco, fui mejorando el código, haciéndolo más modular y fácil de manejar. Lo que empezó como una simple curiosidad terminó convirtiéndose en un sistema con el que podía crear y entrenar redes neuronales desde cero.</p>
+    
+    <p>Ahora quiero compartir este camino con cualquiera que, como yo, tenga curiosidad por entender cómo aprenden las máquinas. Si nunca has programado o no sabes nada sobre inteligencia artificial, no te preocupes: aquí vamos paso a paso, desde lo más básico hasta lo más avanzado. ¡Vamos a aprender juntos! 🚀</p>
+  </main>
+  <footer class="footer">
+    <p><a href="#">Sobre el autor</a> | <a href="#">Contacto</a> | <a href="LICENSE">Licencia</a></p>
+  </footer>
 </body>
-<footer>
-  <div class="footer-links">
-    <h5>
-      <a href="#">Sobre el autor</a> | 
-      <a href="#">Contacto</a> | 
-      <a href="LICENSE">Licencia</a>
-    </h5>
-  </div>
-</footer>
 </html>
